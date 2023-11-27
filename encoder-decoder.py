@@ -24,9 +24,9 @@ def get_dataset(n_in, n_out, cardinality, n_samples):
 		# create padded input target sequence
 		target_in = [0] + target[:-1]
 		# encode
-		src_encoded = to_categorical([source], num_classes=cardinality)
-		tar_encoded = to_categorical([target], num_classes=cardinality)
-		tar2_encoded = to_categorical([target_in], num_classes=cardinality)
+		src_encoded = to_categorical(source, num_classes=cardinality)
+		tar_encoded = to_categorical(target, num_classes=cardinality)
+		tar2_encoded = to_categorical(target_in, num_classes=cardinality)
 		# store
 		X1.append(src_encoded)
 		X2.append(tar2_encoded)
