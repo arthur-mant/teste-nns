@@ -1,6 +1,6 @@
 import string
 import numpy as np
-
+import sys
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model
@@ -96,9 +96,14 @@ eng_pad_sentence = eng_pad_sentence.reshape(*eng_pad_sentence.shape, 1)
 
 enc_dec_model = get_model(spanish_vocab, english_vocab, max_spanish_len, max_english_len)
 
-model_results = enc_dec_model.fit(spa_pad_sentence, eng_pad_sentence, batch_size=30, epochs=100)
-#SAVING
-enc_dec_model.save("saved_nns/tradutor.keras")
+if "-n" in sys.argv:
+    print("training new neural network")
+    model_results = enc_dec_model.fit(spa_pad_sentence, eng_pad_sentence, batch_size=30, epochs=100)
+    #SAVING
+    enc_dec_model.save("saved_nns/tradutor.keras")
+else:
+    print("loading already trained nn")
+    enc_dec_model.load_weights("./saved_nns/tradutor.keras")
 
 index = 14 #qualqr numero
 print("The english sentence is: {}".format(english_sentences[index]))
