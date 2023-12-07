@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 
+import sys
 import math
 import matplotlib.pyplot as plt
 import torchvision
@@ -135,7 +136,7 @@ for i in range(16):
     plt.imshow(real_samples[i].reshape(28, 28), cmap="gray_r")
     plt.xticks([])
     plt.yticks([])
-
+plt.show()
 
 discriminator = Discriminator().to(device=device)
 generator = Generator().to(device=device)
@@ -147,19 +148,24 @@ loss_function = nn.BCELoss()
 optimizer_discriminator = torch.optim.Adam(discriminator.parameters(), lr=lr)
 optimizer_generator = torch.optim.Adam(generator.parameters(), lr=lr)
 
-treinamento_gan(discriminator, generator, num_epochs, train_loader)
-
-torch.save(generator, "saved_nns/generator.torch")
-torch.save(discriminator, "saved_nns/discriminator.torch")
-
+if "-n" in sys.argv:
+    print("training new neural network")
+    treinamento_gan(discriminator, generator, num_epochs, train_loader)
+    torch.save(generator.state_dict(), "saved_nns/generator.torch")
+    torch.save(discriminator.state_dict(), "saved_nns/discriminator.torch")
+else:
+    print("loading already trained nn")
+    discriminator.load_state_dict(torch.load("saved_nns/discriminator.torch"))
+    generator.load_state_dict(torch.load("saved_nns/generator.torch"))
 
 latent_space_samples = torch.randn(batch_size, 100).to(device=device)
 generated_samples = generator(latent_space_samples)
 
+print("displaying generated images")
 generated_samples = generated_samples.cpu().detach()
 for i in range(16):
     ax = plt.subplot(4, 4, i + 1)
     plt.imshow(generated_samples[i].reshape(28, 28), cmap="gray_r")
     plt.xticks([])
     plt.yticks([])
-
+plt.show()
