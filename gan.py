@@ -63,7 +63,10 @@ class Generator(nn.Module):
 
 
 
-def treinamento_gan(discriminator, generator, num_epochs, train_loader):
+def treinamento_gan(discriminator, generator, num_epochs,
+                        train_loader, loss_function,
+                        optimizer_discriminator, optimizer_generator
+                    ):
     for epoch in range(num_epochs):
         for n, (real_samples, mnist_labels) in enumerate(train_loader):
             # Data for training the discriminator
@@ -150,7 +153,10 @@ optimizer_generator = torch.optim.Adam(generator.parameters(), lr=lr)
 
 if "-n" in sys.argv:
     print("training new neural network")
-    treinamento_gan(discriminator, generator, num_epochs, train_loader)
+    treinamento_gan(
+        discriminator, generator, num_epochs, train_loader,
+        loss_function, optimizer_discriminator, optimizer_generator
+    )
     torch.save(generator.state_dict(), "saved_nns/generator.torch")
     torch.save(discriminator.state_dict(), "saved_nns/discriminator.torch")
 else:
